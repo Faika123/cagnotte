@@ -30,4 +30,3 @@ COPY --from=build /app/dist/dashboard_admin /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
 # Expose port 80
 EXPOSE 80
-
