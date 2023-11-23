@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_PATH = "C:\\Program Files\\Docker\\cli-plugins"
         PATH = "${DOCKER_PATH}:${PATH}"
+        NODEJS_PATH = "C:\\Program Files (x86)\\nodejs"
     }
     stages {
         stage('Checkout') {
@@ -16,7 +17,7 @@ pipeline {
         stage('Build and Rename Docker Image') {
             steps {
                 script {
-                    // Use the default Dockerfile name and build context
+                    // Explicitly set the Dockerfile location and use the correct build context
                     bat 'docker build -t cagnotte-v2_%BUILD_ID% -f Dockerfile .'
 
                     // Renaming the Docker image
@@ -29,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // Running the Docker container
-                    bat "docker run -d --name dashboard_admin -p 8080:80 faika/cagnotte-v2_${BUILD_ID}"
+                    bat "docker run -d --name dashboard_admin faika/cagnotte-v2_${BUILD_ID}"
                 }
             }
         }
