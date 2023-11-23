@@ -67,7 +67,7 @@ pipeline {
 
                     // Exécuter le conteneur Docker
                     // bat "docker rm -f cagnotte-v1 faika/cagnotte:${BUILD_ID}"
-                    bat "docker run  -d --name cagnotte1 faika/cagnotte_${BUILD_ID}"
+                    bat "docker run  -d --name dashboard_admin faika/cagnotte_${BUILD_ID}"
                 }
             }
         }
