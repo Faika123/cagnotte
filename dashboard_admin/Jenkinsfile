@@ -17,7 +17,7 @@ pipeline {
         stage('Build and Rename Docker Image') {
             steps {
                 script {
-                    // Explicitly set the Dockerfile location and use the correct build context
+                    // Use the default Dockerfile name and build context
                     bat 'docker build -t cagnotte-v2_%BUILD_ID% -f Dockerfile .'
 
                     // Renaming the Docker image
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // Running the Docker container
-                    bat "docker run -d --name dashboard_admin faika/cagnotte-v2_${BUILD_ID}"
+                    bat "docker run -d --name dashboard_admin -p 8080:80 faika/cagnotte-v2_${BUILD_ID}"
                 }
             }
         }
