@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        DOCKER_PATH = "C:/Program Files/Docker/cli-plugins"
+        DOCKER_PATH = "C:\\Program Files\\Docker\\cli-plugins"
         PATH = "${DOCKER_PATH}:${PATH}"
         // DOCKERHUB_CREDENTIALS = credentials('DockerHub')
-        NODEJS_PATH = "C:/Program Files/nodejs"
+        NODEJS_PATH = "C:\\Program Files (x86)\\nodejs"
     }
     stages {
         stage('Checkout') {
@@ -14,63 +14,64 @@ pipeline {
                 }
             }
         }
-        stage('Install Node.js and npm') {
+    
+       // stage('Install Node.js') {
+           
+       //      steps {
+       //          script {
+       //              // Utiliser le plugin NodeJS pour installer Node.js
+       //              def nodejsInstallation = tool 'node'
+       //              env.PATH = "${nodejsInstallation}/bin:${env.PATH}"
+                    
+       //              // Vérifier si la version de Node.js est correcte
+       //              bat "node -v"
+       //          }
+       //      }
+       //  }
+        //   stage('Install Dependencies') {
+        //     steps {
+        //         // Installer les dépendances Node.js
+        //         bat 'npm install'
+        //     }
+        // }
+
+        // stage('Build') {
+        //     steps {
+        //         // Construire l'application Angular 
+        //         bat 'npm run build '
+        //     }
+        // }
+        //      stage('Archive Artifacts') {
+        //     steps {
+        //         // Archiver les fichiers construits pour les publier comme artefacts
+        //         archiveArtifacts 'dist/**/*'
+        //     }
+        // }
+         stage('Build and Rename Docker Image') {
+    steps {
+        // Utiliser un conteneur Docker pour construire et renommer l'image
+        script {
+            // Construire l'image Docker (ajustez la commande selon vos besoins)
+            bat 'docker build -t cagnotte-v2_%BUILD_ID% .'
+
+            // Renommer l'image Docker
+            bat "docker tag cagnotte-v2_%BUILD_ID% faika/cagnotte-v2_%BUILD_ID%"
+        }
+    }
+}
+
+          stage('Build and Run Docker Container') {
             steps {
+                // Utiliser un conteneur Docker pour construire et exécuter le conteneur
                 script {
-                    def nodejs = tool name: 'NODEJS', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
-                    env.PATH = "${nodejs}/bin:${env.PATH}"
+
+                    // Exécuter le conteneur Docker
+                    // bat "docker rm -f cagnotte-v2 faika/cagnotte-v2:${BUILD_ID}"
+                    bat "docker run  -d --name dashboard_admin faika/cagnotte-v2_${BUILD_ID}"
                 }
             }
         }
-        // stage('Build Angular Application') {
-        //     steps {
-        //       script {  
-        //         bat 'npm install'  // Installez les dépendances du projet avec "bat"
-        //         bat 'npm run build' // Construisez l'application Angular avec "bat"
-        //     }
-        // }}
-        // stage('Publish Artifact') {
-        //     steps {
-        //       script{
-        //         archiveArtifacts 'dist'  // Archivez les fichiers de l'application construite
-        //     }}
-        // }
-//       stage('Publish Artifact') {
-//     steps {
-//         script {
-//             archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
-//         }
-//     }
-// }
-//       stage('Build & rename Docker Image') {
-//     steps {
-//         script {
-//             // Construisez l'image Docker
-//             bat docker build -t "FRONT-ANGULAR-Image:${BUILD_ID}" .
-//             bat "docker tag FRONT-ANGULAR-Image:${BUILD_ID} faika/FRONT-ANGULAR-Image:${BUILD_ID} "
-//         }
-//     }
-// }
-      stage('Build & rename Docker Image') {
-    steps {
-        script {
-            // Construisez l'image Docker
-            bat "docker build -t cagnotte-v1:${BUILD_ID} ."
-            bat "docker tag cagnotte-v1:${BUILD_ID} faika/cagnotte-v1:${BUILD_ID}"
-        }
-    }
-}
-      stage('Run Docker Container') {
-    steps {
-        script {
-            // Exécutez le conteneur Docker en utilisant l'image construite
-            bat "docker run -d -p 80:80 --name dashboard_admin_${BUILD_ID} faika/cagnotte-v1-image:${BUILD_ID}"
-        }
-    }
-}
-
-
-
-
-    }
-}
+        
+    }}
+    
+   
